@@ -1,11 +1,5 @@
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import {
-  FormControl,
-  FormDescription,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
+import { FormControl, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 
 interface FormFieldProps<T extends FieldValues> {
@@ -13,10 +7,10 @@ interface FormFieldProps<T extends FieldValues> {
   name: Path<T>;
   label: string;
   placeholder?: string;
-  type?: "text" | "email" | "password" | "file";
+  type?: "text" | "email" | "password";
 }
 
-const FormField = ({
+const FormField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -31,7 +25,7 @@ const FormField = ({
         <FormItem>
           <FormLabel className="label">{label}</FormLabel>
           <FormControl>
-            <Input type={type}  placeholder={placeholder} {...field} />
+            <Input type={type} placeholder={placeholder} {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
