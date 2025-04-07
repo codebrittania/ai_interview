@@ -88,9 +88,11 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     vapi.stop();
   };
 
-  const lastestMessage = messages[messages.length - 1]?.content;
+  const latestMessage = messages[messages.length - 1]?.content;
+
   const isCallInactiveOrFinished =
     callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED;
+
   return (
     <>
       <div className="call-view mt-4 md:mt-10">
@@ -124,13 +126,13 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         <div className="transcript-border mt-8">
           <div className="transcript">
             <p
-              key={lastestMessage}
+              key={latestMessage}
               className={cn(
                 "transition-opacity duration-500 opacity-0",
                 "animate-fadeIn opacity-100"
               )}
             >
-              {lastestMessage}
+              {latestMessage}
             </p>
           </div>
         </div>
