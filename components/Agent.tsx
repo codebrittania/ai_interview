@@ -20,25 +20,38 @@ interface SavedMessage {
 
 const Agent = ({ userName, userId, type }: AgentProps) => {
   const router = useRouter();
-  const [isSpeaking, setisSpeaking] = useState<boolean>(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
-  
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
-    const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
-    const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+    const onCallStart = () => {
+      setCallStatus(CallStatus.ACTIVE);
+    };
+
+    const onCallEnd = () => {
+      setCallStatus(CallStatus.FINISHED);
+    };
+
     const onMessage = (message: Message) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
         const newMessage = { role: message.role, content: message.transcript };
         setMessages((prev) => [...prev, newMessage]);
       }
     };
-    const onSpeechStart = () => setisSpeaking(true);
-    const onSpeechEnd = () => setisSpeaking(false);
+    const onSpeechStart = () => {
+      console.log("speech start");
+      setIsSpeaking(true);
+    };
 
-    const onError = (error: Error) => console.log("Error", error);
+    const onSpeechEnd = () => {
+      console.log("speech end");
+      setIsSpeaking(false);
+    };
 
+    const onError = (error: Error) => {
+      console.log("Error:", error);
+    };
     vapi.on("call-start", onCallStart);
     vapi.on("call-end", onCallEnd);
     vapi.on("message", onMessage);
@@ -125,21 +138,23 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
 
       <div className="w-full flex justify-center">
         {callStatus !== "ACTIVE" ? (
-          <button className="relative btn-call mt-4 md:mt-6" onClick={handleCall}>
+          <button
+            className="relative btn-call mt-4 md:mt-6"
+            onClick={handleCall}
+          >
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
-                (callStatus !== "CONNECTING") && "hidden"
+                callStatus !== "CONNECTING" && "hidden"
               )}
             />
-            <span>
-              {isCallInactiveOrFinished
-                ? "Call"
-                : ". . ."}
-            </span>
+            <span>{isCallInactiveOrFinished ? "Call" : ". . ."}</span>
           </button>
         ) : (
-          <button className="btn-disconnect cursor-pointer mt-4 md:mt-6" onClick={handleDisconnect}>
+          <button
+            className="btn-disconnect cursor-pointer mt-4 md:mt-6"
+            onClick={handleDisconnect}
+          >
             End
           </button>
         )}
